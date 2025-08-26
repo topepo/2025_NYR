@@ -1,0 +1,499 @@
+---
+title: "Measuring LLM Effectiveness"
+author: "Max Kuhn"
+---
+
+# On github: `topepo/2025_NYR`  {background-color="#B25D91FF"}
+
+```{r}
+#| label: pkgs
+#| results: hide
+#| echo: false
+library(vitals)
+library(tidymodels)
+library(ordinal)
+library(cli)
+library(gt)
+library(brms)
+library(RcppEigen)
+library(broom)
+library(gt)
+```
+
+```{r}
+#| label: vitials
+#| results: hide
+#| echo: false
+
+"https://github.com/tidyverse/vitals/raw/refs/heads/main/vignettes/articles/data/analysis/are_claude.rda" |> 
+ url() |> 
+ load()
+
+"https://github.com/tidyverse/vitals/raw/refs/heads/main/vignettes/articles/data/analysis/are_gemini.rda" |> 
+ url() |> 
+ load()
+
+"https://github.com/tidyverse/vitals/raw/refs/heads/main/vignettes/articles/data/analysis/are_gpt.rda" |> 
+ url() |> 
+ load()
+
+are_eval <-
+  vitals_bind(
+    `Claude 4 Sonnet` = are_claude,
+    `GPT 4.1` = are_gpt,
+    `Gemini 2.5 Pro` = are_gemini
+  ) |>
+  rename(LLM = task)
+
+are_eval
+
+leaders <-
+  are_eval %>%
+  summarize(correct = mean(score == "C"), .by = c(LLM)) %>%
+  arrange(correct)
+
+questions <- 
+ are_eval %>%
+ summarize(correct = mean(score == "C"), .by = c(id)) %>%
+ arrange(correct)
+
+are_eval <- are_eval %>%
+ mutate(
+  LLM = factor(LLM, leaders$LLM),
+  id = factor(id, questions$id)
+ )
+```
+
+## How do we compare LLMs, prompts, etc?
+
+> How do I add a calibration model on top of an XGBoost classifier for the `mtcars` data using tidymodels?
+
+<br> 
+
+If I get results for this using different LLMs or prompts, how can I know
+
+- Which setup works best? 
+
+- Do the results improve over time? 
+
+- How stochastic are the results? 
+
+
+<br>
+
+We need inference. 
+
+## inspect and vitals 
+
+[`inspect`](https://inspect.aisi.org.uk/) is "a framework for large language model evaluations created by the UK AI Security Institute."
+
+<br> 
+
+[`vitals`](vitals.tidyverse.org) is an R package that treats LLM evaluations similarly to unit testing. 
+
+<br>
+
+We'll use example data from `vitals` to illustrate some of the statistical issues. 
+
+- `r vctrs::vec_unique_count(are_eval$id)` R-related tasks/questions
+- Three LLMS: `r cli::format_inline("{levels(are_eval$LLM)}")`
+- Each question is run three times for each LLM
+
+## Terminology/notation
+
+For our data, there are three _ordinal_ levels: incorrect, partially correct, and correct.
+
+Some notation: 
+
+- $C$ outcome values ($C = 3$)
+- $p$ LLMs ($p=3$ for our data)
+- $m$ epochs (a.k.a. replicates, $m = 3$)
+
+<br> 
+
+This talk focuses on ordinal outcomes. Binary or numeric outcomes have very close analogies (if not simpler models). 
+
+## The data
+
+```{r}
+#| label: tile-plot
+#| echo: false
+#| fig-width: 8
+#| fig-height: 5
+#| fig-align: "center"
+#| out-width: "80%"
+#| 
+are_eval %>%
+  ggplot(aes(x = epoch, y = id)) +
+  geom_raster(aes(fill = score), alpha = 2 / 3) +
+  facet_wrap(~ LLM, ncol = 3) +
+  scale_fill_brewer(palette = "Set1") +
+  labs(x = "Epoch", y = NULL) +
+  theme(
+    legend.position = "top",
+    strip.text = element_text(size = 8)
+  )
+```
+## The data
+
+[](images/tile.svg)
+
+## Confluence manuscript
+
+
+## Unsexy classical statistics to the rescue
+
+This experimental design falls squarely into the realm of analysis of variance (ANOVA). 
+
+<br> 
+
+Modern statistical tools for basic or more advanced models have evolved into frameworks that can seamlessly handle different outcome types of designs. 
+
+<br> 
+
+No real need for detailed estimation equations or to convert qualitative outcomes to quantitative encodings. 
+
+
+
+## Basic probability {background-color="#D04E59FF"}
+
+$$Var[X-Y] = Var[X] + Var[Y] - 2Cov[X, Y]$$
+<br> 
+
+We have to model the within-question correlations otherwise we drastically underpower our analysis.  
+
+
+## The proportional odds model
+
+To model the score probabilities, the cumulative logit model estimates $C-1$ outcomes of
+
+$$
+\log\left(\frac{Pr[Y_{i} \ge c]}{1 - Pr[Y_{i} \ge c]}\right) = (\theta_c - \alpha_{k})- (\beta_2x_{i2} + \ldots +  \beta_{p}x_{ip})
+$$
+
+::: {.column width="50%"}
+- $c = 1\ldots C$ outcomes (correct, ...)
+- $i=1\ldots n$ results
+- $j=2\ldots p$ LLMs
+- $k=1\ldots m$ epochs/replicates
+:::
+
+::: {.column width="50%"}
+- $\theta_c$: differences in outcome levels
+- $\alpha_{k}$: within-question correlation
+- $\beta_{j}$: contrasts LLMs
+:::
+
+
+
+
+## Hierarchical (mixed) model
+
+Estimate parameters using maximum likelihood. Straightforward-ish. 
+
+<br> 
+
+Enables inference via p-values (booo) and confidence intervals (YAY).
+
+<br>
+
+```{r}
+#| label: mle
+#| eval: false
+#| code-line-numbers: "2|3|5-6|"
+# `id` is the question number
+llm_mod  <- ordinal::clmm(score ~ LLM + (1|id), data = res, Hess = TRUE)
+null_mod <- ordinal::clmm(score ~ 1   + (1|id), data = res, Hess = TRUE)
+
+anova(llm_mod, null_mod)
+tidy(llm_mod, conf.int = TRUE)
+```
+
+```{r}
+#| label: mle-comps
+#| results: hide
+#| echo: false
+
+multiple_mod <- clmm(score ~ LLM + (1|id), data = are_eval, Hess = TRUE)
+multiple_null <- clmm(score ~ 1 + (1|id), data = are_eval, Hess = TRUE)
+
+multiple_lrt <- anova(multiple_null, multiple_mod)
+
+multiple_coef <- 
+ multiple_mod %>% 
+ tidy(conf.int = TRUE, conf.level = 0.9) %>% 
+ mutate(
+  LLM = gsub("LLM", "", term),
+  parameter = ifelse(coef.type == "intercept", "theta", "beta")
+ ) 
+
+mle_odds <- 
+ multiple_coef %>% 
+ filter(!grepl("\\|", LLM)) %>% 
+ select(LLM, estimate, lower = conf.low, upper = conf.high) %>% 
+ mutate(
+  odds_estimate = exp(estimate),
+  odds_lower = exp(lower),
+  odds_upper = exp(upper)
+ ) |> 
+ select(-estimate, -lower, -upper)
+
+multiple_coef <- full_join(multiple_coef, mle_odds, by = "LLM")
+
+multiple_intercepts <- 
+ are_eval %>% 
+ distinct(id) %>%
+ mutate(
+  effect = multiple_mod$ranef,
+  # reorder the ids by the magnitude of the effect associated with them
+  id = factor(id),
+  id = reorder(id, effect)
+ )
+
+difficult <- 
+ multiple_intercepts %>% 
+ slice_min(effect, n = 1, with_ties = FALSE) %>% 
+ inner_join(are_eval, by = "id")
+
+difficult_xtab <- count(difficult, score)
+difficult_text <- 
+ format_inline("{sum(difficult_xtab$n[difficult_xtab$score == 'C'])} of {difficult_xtab$n}")
+
+effect_range <- max(extendrange(abs(multiple_intercepts$effect)))
+```
+
+## Results
+
+Parameter estimates are the difference from the `r levels(are_eval$LLM)[1]` results:
+
+```{r}
+#| label: mle-beta
+#| echo: false
+
+multiple_coef %>%
+ select(-std.error, -statistic, -term, -coef.type, -parameter) |> 
+ filter(!grepl("\\|", LLM)) |> 
+ relocate(LLM) |> 
+ gt() %>%
+ tab_spanner(
+  label = "Parameters",
+  columns = c(estimate, conf.low, conf.high, p.value)
+ ) %>%
+ tab_spanner(
+  label = "Odds Ratios",
+  columns = c(odds_estimate, odds_lower, odds_upper)
+ ) %>%
+ cols_label(
+  contains("estimate") ~ "Estimate",
+  contains("p.value") ~ "p-Value",
+  contains("lower") ~ "Lower 95%",
+  contains("upper") ~ "Lower 95%",
+  contains("conf") ~ "Lower 95%"
+ ) %>%
+ fmt_number(columns = c(-LLM), n_sigfig = 3) |> 
+ tab_options(table.font.size = px(30)) 
+```
+
+. . .
+
+IMO inference is torturous: 
+
+. . .
+
+> If we were to repeat this experiment a large number of times, the true parameter value of the difference between `r levels(are_eval$LLM)[1]` and `r levels(are_eval$LLM)[2]` would fall between `r round(multiple_coef$conf.low[4], 3)` and `r round(multiple_coef$conf.high[4], 3)` 95% of the time.
+
+## Difficulty Estimates
+
+```{r}
+#| label: mle-tasks
+#| echo: false
+#| fig-width: 7
+#| fig-height: 4
+#| fig-align: "center"
+#| out-width: "80%"
+
+multiple_intercepts %>% 
+ ggplot(aes(x = effect, y = id)) + 
+ geom_point() +
+ labs(y = NULL, x = "Random Intercept Estimate\n(incorrect <----------------> correct)") +
+ lims(x = c(-effect_range, effect_range)) +
+ theme_bw()
+```
+
+
+## Bayesian hierarchical model
+
+Requires priors for parameters and estimation via MCMC.
+
+<br> 
+
+Inference is _rational_ via probability statements. 
+
+<br>
+
+Code is not as simple, but `brms` has a high-level interface
+```{r}
+#| label: bayes-comps-show
+#| eval: false
+#| line-numbers: false
+brm(
+	score ~ LLM + (1 | id),
+	data = are_eval,
+	family = cumulative(link = "logit", threshold = "flexible"),
+	prior = c(set_prior(prior = "student_t(1, 0, 1)", class = "Intercept")),
+	# sampling options such as `chains`, `iter`, etc.
+)
+```
+
+
+```{r}
+#| label: bayes-comps
+#| results: hide
+#| echo: false
+#| cache: true
+multiple_bayes <-
+ brm(
+  score ~ LLM + (1|id),
+  data = are_eval,
+  family = cumulative(link = "logit", threshold = "flexible"),
+  prior = c(set_prior(prior = "student_t(1, 0, 1)", class = "Intercept")),
+  chains = 10,
+  iter = 10000,
+  cores = 10,
+  seed = 410
+ )
+
+set.seed(280)
+
+all_post <- as_draws_df(multiple_bayes)
+
+bayes_regression_param <- 
+ all_post %>%
+ select(contains("b_LLM")) %>% 
+ pivot_longer(
+  cols = c(everything()),
+  names_to = "param_name",
+  values_to = "value"
+ ) %>% 
+ mutate(
+  LLM = 
+   case_when(
+    param_name == "b_LLMGemini2.5Pro" ~ "Gemini 2.5 Pro",
+    param_name == "b_LLMClaude4Sonnet" ~ "Claude 4 Sonnet"
+   ),
+  LLM = factor(LLM)
+ ) 
+
+bayes_reg_summary <- 
+ bayes_regression_param %>% 
+ summarize(
+  mean = mean(value),
+  lower = quantile(value, 0.05),
+  upper = quantile(value, 0.95),
+  mean_odds = mean(exp(value)),
+  lower_odds = quantile(exp(value), 0.05),
+  upper_odds = quantile(exp(value), 0.95),
+  .by = c(LLM)
+ )
+
+post_claude <- bayes_regression_param$value[bayes_regression_param$LLM == "Claude 4 Sonnet"]
+o2_le_zero <- mean(abs(post_claude) < 0.05) * 100
+
+bayes_intercepts <- 
+ all_post %>%
+ select(contains("r_id")) %>%
+ pivot_longer(
+  cols = c(everything()),
+  names_to = "sample",
+  values_to = "value"
+ ) %>%
+ summarize(
+  mean = mean(value),
+  lower = quantile(value, prob = 0.05),
+  upper = quantile(value, prob = 0.95),
+  .by = c(sample)
+ ) %>%
+ mutate(
+  id = gsub(",Intercept]", "", sample, fixed = TRUE),
+  id = gsub("r_id[", "", id, fixed = TRUE),
+  id = factor(id)
+ ) %>%
+ arrange(id) %>% 
+ inner_join(
+  are_eval %>% distinct(id), by = "id"
+ ) %>% 
+ mutate(
+  id = as.character(id),
+  id = reorder(id, mean)
+ )
+
+bayes_effect_range <- 
+ bayes_intercepts %>% 
+ select(lower, upper) %>% 
+ unlist() %>% 
+ abs() %>% 
+ extendrange() %>% 
+ max()
+```
+
+
+## Bayesian Results
+
+<br> 
+
+```{r}
+#| label: bayes-beta
+#| echo: false
+
+bayes_reg_summary %>%
+ gt() %>%
+ tab_spanner(
+  label = "Parameters",
+  columns = c(mean, lower, upper)
+ ) %>%
+ tab_spanner(
+  label = "Odds Ratios",
+  columns = c(mean_odds, lower_odds, upper_odds)
+ ) %>%
+ cols_label(
+  starts_with("mean") ~ "Mean",
+  starts_with("lower") ~ "5% Percentile",
+  starts_with("upper") ~ "95% Percentile"
+ ) %>%
+ fmt_number(columns = c(-LLM), n_sigfig = 3) |> 
+ tab_options(table.font.size = px(26)) 
+```
+
+<br> 
+
+. . .
+
+Inference is incredibly simple: 
+
+. . .
+
+> There is a `r round(mean(all_post$b_LLMClaude4Sonnet > 0)* 100, 1)`% probability that `r levels(are_eval$LLM)[3]` is better than `r levels(are_eval$LLM)[1]`.
+
+## Bayesian difficulty Estimates
+
+```{r}
+#| label: bayes-tasks
+#| echo: false
+#| fig-width: 7
+#| fig-height: 4
+#| fig-align: "center"
+#| out-width: "80%"
+
+bayes_intercepts %>%
+ ggplot(aes(y = id)) +
+ geom_point(aes(x = mean)) +
+ geom_errorbar(aes(xmin = lower, xmax = upper), width = 1 / 2) +
+ labs(y = NULL, x = "Random Intercept Estimate\n(incorrect <----------------> correct)") +
+ lims(x = c(-bayes_effect_range, bayes_effect_range)) +
+ theme_bw()
+```
+
+
+## Thanks
+
+Thanks for the invitation to speak today!
