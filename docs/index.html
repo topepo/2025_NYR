@@ -225,8 +225,7 @@ Max Kuhn and Simon Couch
 <li><p>Do the results improve over time?</p></li>
 <li><p>How stochastic are the results?</p></li>
 </ul>
-<p><br></p>
-<p>We need inference.</p>
+<p>See <a href="https://www.simonpcouch.com/blog/2025-08-26-predictive/">“I was wrong about tidymodels and LLMs”</a> by Simon (yesterday) for an interesting read.</p>
 </section>
 <section id="inspect-and-vitals" class="slide level2">
 <h2>inspect and vitals</h2>
@@ -264,6 +263,11 @@ Max Kuhn and Simon Couch
 <p>It shows equations for computing large-sample standard errors for proportions (which are assumed to be normal).</p>
 <p><br></p>
 <p>The manuscript is not wrong statistically, but very myopic and not especially good statistical methodology.</p>
+</section></section>
+<section>
+<section id="we-need-statistical-inference" class="title-slide slide level1 center" data-background-color="#D04E59FF">
+<h1>We need statistical inference</h1>
+
 </section>
 <section id="unsexy-existing-statistical-models-to-the-rescue" class="slide level2">
 <h2>Unsexy, existing statistical models to the rescue</h2>
@@ -317,23 +321,23 @@ Max Kuhn and Simon Couch
 <p>Parameter estimates are the difference from the GPT 4.1 results:</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="abxcrujicm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#abxcrujicm table {
+<div id="kprzyvuezx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#kprzyvuezx table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#abxcrujicm thead, #abxcrujicm tbody, #abxcrujicm tfoot, #abxcrujicm tr, #abxcrujicm td, #abxcrujicm th {
+#kprzyvuezx thead, #kprzyvuezx tbody, #kprzyvuezx tfoot, #kprzyvuezx tr, #kprzyvuezx td, #kprzyvuezx th {
   border-style: none;
 }
 
-#abxcrujicm p {
+#kprzyvuezx p {
   margin: 0;
   padding: 0;
 }
 
-#abxcrujicm .gt_table {
+#kprzyvuezx .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -359,12 +363,12 @@ Max Kuhn and Simon Couch
   border-left-color: #D3D3D3;
 }
 
-#abxcrujicm .gt_caption {
+#kprzyvuezx .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#abxcrujicm .gt_title {
+#kprzyvuezx .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -376,7 +380,7 @@ Max Kuhn and Simon Couch
   border-bottom-width: 0;
 }
 
-#abxcrujicm .gt_subtitle {
+#kprzyvuezx .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -388,7 +392,7 @@ Max Kuhn and Simon Couch
   border-top-width: 0;
 }
 
-#abxcrujicm .gt_heading {
+#kprzyvuezx .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -400,13 +404,13 @@ Max Kuhn and Simon Couch
   border-right-color: #D3D3D3;
 }
 
-#abxcrujicm .gt_bottom_border {
+#kprzyvuezx .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#abxcrujicm .gt_col_headings {
+#kprzyvuezx .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -421,7 +425,7 @@ Max Kuhn and Simon Couch
   border-right-color: #D3D3D3;
 }
 
-#abxcrujicm .gt_col_heading {
+#kprzyvuezx .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -441,7 +445,7 @@ Max Kuhn and Simon Couch
   overflow-x: hidden;
 }
 
-#abxcrujicm .gt_column_spanner_outer {
+#kprzyvuezx .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -453,15 +457,15 @@ Max Kuhn and Simon Couch
   padding-right: 4px;
 }
 
-#abxcrujicm .gt_column_spanner_outer:first-child {
+#kprzyvuezx .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#abxcrujicm .gt_column_spanner_outer:last-child {
+#kprzyvuezx .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#abxcrujicm .gt_column_spanner {
+#kprzyvuezx .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -473,11 +477,11 @@ Max Kuhn and Simon Couch
   width: 100%;
 }
 
-#abxcrujicm .gt_spanner_row {
+#kprzyvuezx .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#abxcrujicm .gt_group_heading {
+#kprzyvuezx .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -503,7 +507,7 @@ Max Kuhn and Simon Couch
   text-align: left;
 }
 
-#abxcrujicm .gt_empty_group_heading {
+#kprzyvuezx .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -518,15 +522,15 @@ Max Kuhn and Simon Couch
   vertical-align: middle;
 }
 
-#abxcrujicm .gt_from_md > :first-child {
+#kprzyvuezx .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#abxcrujicm .gt_from_md > :last-child {
+#kprzyvuezx .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#abxcrujicm .gt_row {
+#kprzyvuezx .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -545,7 +549,7 @@ Max Kuhn and Simon Couch
   overflow-x: hidden;
 }
 
-#abxcrujicm .gt_stub {
+#kprzyvuezx .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -558,7 +562,7 @@ Max Kuhn and Simon Couch
   padding-right: 5px;
 }
 
-#abxcrujicm .gt_stub_row_group {
+#kprzyvuezx .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -572,15 +576,15 @@ Max Kuhn and Simon Couch
   vertical-align: top;
 }
 
-#abxcrujicm .gt_row_group_first td {
+#kprzyvuezx .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#abxcrujicm .gt_row_group_first th {
+#kprzyvuezx .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#abxcrujicm .gt_summary_row {
+#kprzyvuezx .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -590,16 +594,16 @@ Max Kuhn and Simon Couch
   padding-right: 5px;
 }
 
-#abxcrujicm .gt_first_summary_row {
+#kprzyvuezx .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#abxcrujicm .gt_first_summary_row.thick {
+#kprzyvuezx .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#abxcrujicm .gt_last_summary_row {
+#kprzyvuezx .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -609,7 +613,7 @@ Max Kuhn and Simon Couch
   border-bottom-color: #D3D3D3;
 }
 
-#abxcrujicm .gt_grand_summary_row {
+#kprzyvuezx .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -619,7 +623,7 @@ Max Kuhn and Simon Couch
   padding-right: 5px;
 }
 
-#abxcrujicm .gt_first_grand_summary_row {
+#kprzyvuezx .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -629,7 +633,7 @@ Max Kuhn and Simon Couch
   border-top-color: #D3D3D3;
 }
 
-#abxcrujicm .gt_last_grand_summary_row_top {
+#kprzyvuezx .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -639,11 +643,11 @@ Max Kuhn and Simon Couch
   border-bottom-color: #D3D3D3;
 }
 
-#abxcrujicm .gt_striped {
+#kprzyvuezx .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#abxcrujicm .gt_table_body {
+#kprzyvuezx .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -652,7 +656,7 @@ Max Kuhn and Simon Couch
   border-bottom-color: #D3D3D3;
 }
 
-#abxcrujicm .gt_footnotes {
+#kprzyvuezx .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -666,7 +670,7 @@ Max Kuhn and Simon Couch
   border-right-color: #D3D3D3;
 }
 
-#abxcrujicm .gt_footnote {
+#kprzyvuezx .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -675,7 +679,7 @@ Max Kuhn and Simon Couch
   padding-right: 5px;
 }
 
-#abxcrujicm .gt_sourcenotes {
+#kprzyvuezx .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -689,7 +693,7 @@ Max Kuhn and Simon Couch
   border-right-color: #D3D3D3;
 }
 
-#abxcrujicm .gt_sourcenote {
+#kprzyvuezx .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -697,72 +701,72 @@ Max Kuhn and Simon Couch
   padding-right: 5px;
 }
 
-#abxcrujicm .gt_left {
+#kprzyvuezx .gt_left {
   text-align: left;
 }
 
-#abxcrujicm .gt_center {
+#kprzyvuezx .gt_center {
   text-align: center;
 }
 
-#abxcrujicm .gt_right {
+#kprzyvuezx .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#abxcrujicm .gt_font_normal {
+#kprzyvuezx .gt_font_normal {
   font-weight: normal;
 }
 
-#abxcrujicm .gt_font_bold {
+#kprzyvuezx .gt_font_bold {
   font-weight: bold;
 }
 
-#abxcrujicm .gt_font_italic {
+#kprzyvuezx .gt_font_italic {
   font-style: italic;
 }
 
-#abxcrujicm .gt_super {
+#kprzyvuezx .gt_super {
   font-size: 65%;
 }
 
-#abxcrujicm .gt_footnote_marks {
+#kprzyvuezx .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#abxcrujicm .gt_asterisk {
+#kprzyvuezx .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#abxcrujicm .gt_indent_1 {
+#kprzyvuezx .gt_indent_1 {
   text-indent: 5px;
 }
 
-#abxcrujicm .gt_indent_2 {
+#kprzyvuezx .gt_indent_2 {
   text-indent: 10px;
 }
 
-#abxcrujicm .gt_indent_3 {
+#kprzyvuezx .gt_indent_3 {
   text-indent: 15px;
 }
 
-#abxcrujicm .gt_indent_4 {
+#kprzyvuezx .gt_indent_4 {
   text-indent: 20px;
 }
 
-#abxcrujicm .gt_indent_5 {
+#kprzyvuezx .gt_indent_5 {
   text-indent: 25px;
 }
 
-#abxcrujicm .katex-display {
+#kprzyvuezx .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#abxcrujicm div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#kprzyvuezx div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1386,7 +1390,7 @@ Odds Ratios
 <p><br></p>
 <p>R has very good existing tools for executing the analyses.</p>
 </section></section>
-<section id="thanks-for-listening" class="title-slide slide level1 center" data-background-color="#D04E59FF">
+<section id="thanks-for-listening" class="title-slide slide level1 center" data-background-color="#FAE093FF">
 <h1>Thanks for listening!</h1>
 
 </section>

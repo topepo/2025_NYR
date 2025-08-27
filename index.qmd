@@ -80,10 +80,7 @@ If I get results for this using different LLMs or prompts, how can I know
 
 - How stochastic are the results? 
 
-
-<br>
-
-We need inference. 
+See ["I was wrong about tidymodels and LLMs"](https://www.simonpcouch.com/blog/2025-08-26-predictive/) by Simon (yesterday) for an interesting read. 
 
 ## inspect and vitals 
 
@@ -149,6 +146,9 @@ It shows equations for computing large-sample standard errors for proportions (w
 <br>
 
 The manuscript is not wrong statistically, but very myopic and not especially good statistical methodology. 
+
+
+# We need statistical inference  {background-color="#D04E59FF"}
 
 
 ## Unsexy, existing statistical models to the rescue
@@ -508,4 +508,4 @@ Existing statistical tools perform very well for any type of evaluation outcome 
 
 R has very good existing tools for executing the analyses. 
 
-# Thanks for listening! {background-color="#D04E59FF"}
+# Thanks for listening! {background-color="#FAE093FF"}
