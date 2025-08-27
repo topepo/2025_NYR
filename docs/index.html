@@ -9,7 +9,7 @@
 <link href="index_files/libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.7.31">
 
-  <meta name="author" content="Max Kuhn">
+  <meta name="author" content="Max Kuhn and Simon Couch">
   <title>Measuring LLM Effectiveness</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -194,13 +194,17 @@
 
 <section id="title-slide" class="quarto-title-block center">
   <h1 class="title">Measuring LLM Effectiveness</h1>
+  <p class="subtitle">New York Data Science &amp; AI Conference</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Max Kuhn 
+Max Kuhn and Simon Couch 
 </div>
-</div>
+        <p class="quarto-title-affiliation">
+            Posit PBC
+          </p>
+    </div>
 </div>
 
 </section>
@@ -253,25 +257,21 @@ Max Kuhn
 <h2>The data</h2>
 
 <img data-src="figures/tile-plot-1.svg" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
-<section id="the-data-1" class="slide level2">
-<h2>The data</h2>
-<p><a href="images/tile.svg"></a></p>
+<section id="anthropic-manuscript" class="slide level2">
+<h2>Anthropic manuscript</h2>
+<p><a href="https://arxiv.org/pdf/2411.00640">“Adding Error Bars to Evals: A Statistical Approach to Language Model Evaluations</a> was released in 2024 and does a good job of describing <em>the spirit</em> of how to analyze these results.</p>
+<p><br></p>
+<p>It shows equations for computing large-sample standard errors for proportions (which are assumed to be normal).</p>
+<p><br></p>
+<p>The manuscript is not wrong statistically, but very myopic and not especially good statistical methodology.</p>
 </section>
-<section id="confluence-manuscript" class="slide level2">
-<h2>Confluence manuscript</h2>
-</section>
-<section id="unsexy-classical-statistics-to-the-rescue" class="slide level2">
-<h2>Unsexy classical statistics to the rescue</h2>
+<section id="unsexy-existing-statistical-models-to-the-rescue" class="slide level2">
+<h2>Unsexy, existing statistical models to the rescue</h2>
+<p>Generalized linear models have existed <em>for 51 years</em> and solve nearly all the variations of this problem.</p>
+<p><br></p>
 <p>This experimental design falls squarely into the realm of analysis of variance (ANOVA).</p>
 <p><br></p>
-<p>Modern statistical tools for basic or more advanced models have evolved into frameworks that can seamlessly handle different outcome types of designs.</p>
-<p><br></p>
-<p>No real need for detailed estimation equations or to convert qualitative outcomes to quantitative encodings.</p>
-</section>
-<section id="basic-probability" class="slide level2" data-background-color="#D04E59FF">
-<h2>Basic probability</h2>
-<p><span class="math display">\[Var[X-Y] = Var[X] + Var[Y] - 2Cov[X, Y]\]</span> <br></p>
-<p>We have to model the within-question correlations otherwise we drastically underpower our analysis.</p>
+<p>“Modern” statistical tools for basic or more advanced models have evolved into frameworks that can seamlessly handle different outcome types of designs.</p>
 </section>
 <section id="the-proportional-odds-model" class="slide level2">
 <h2>The proportional odds model</h2>
@@ -290,7 +290,11 @@ Max Kuhn
 <ul>
 <li><span class="math inline">\(\theta_c\)</span>: differences in outcome levels</li>
 <li><span class="math inline">\(\alpha_{k}\)</span>: within-question correlation</li>
-<li><span class="math inline">\(\beta_{j}\)</span>: contrasts LLMs</li>
+<li><span class="math inline">\(\beta_{j}\)</span>: contrasts LLMs
+<ul>
+<li><span class="math inline">\(\beta_{2}\)</span>: GPT - Gemini</li>
+<li><span class="math inline">\(\beta_{3}\)</span>: GPT - Claude</li>
+</ul></li>
 </ul>
 </div></section>
 <section id="hierarchical-mixed-model" class="slide level2">
@@ -313,23 +317,23 @@ Max Kuhn
 <p>Parameter estimates are the difference from the GPT 4.1 results:</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="bdbigyuirh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#bdbigyuirh table {
+<div id="abxcrujicm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#abxcrujicm table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#bdbigyuirh thead, #bdbigyuirh tbody, #bdbigyuirh tfoot, #bdbigyuirh tr, #bdbigyuirh td, #bdbigyuirh th {
+#abxcrujicm thead, #abxcrujicm tbody, #abxcrujicm tfoot, #abxcrujicm tr, #abxcrujicm td, #abxcrujicm th {
   border-style: none;
 }
 
-#bdbigyuirh p {
+#abxcrujicm p {
   margin: 0;
   padding: 0;
 }
 
-#bdbigyuirh .gt_table {
+#abxcrujicm .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -355,12 +359,12 @@ Max Kuhn
   border-left-color: #D3D3D3;
 }
 
-#bdbigyuirh .gt_caption {
+#abxcrujicm .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#bdbigyuirh .gt_title {
+#abxcrujicm .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -372,7 +376,7 @@ Max Kuhn
   border-bottom-width: 0;
 }
 
-#bdbigyuirh .gt_subtitle {
+#abxcrujicm .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -384,7 +388,7 @@ Max Kuhn
   border-top-width: 0;
 }
 
-#bdbigyuirh .gt_heading {
+#abxcrujicm .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -396,13 +400,13 @@ Max Kuhn
   border-right-color: #D3D3D3;
 }
 
-#bdbigyuirh .gt_bottom_border {
+#abxcrujicm .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#bdbigyuirh .gt_col_headings {
+#abxcrujicm .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -417,7 +421,7 @@ Max Kuhn
   border-right-color: #D3D3D3;
 }
 
-#bdbigyuirh .gt_col_heading {
+#abxcrujicm .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -437,7 +441,7 @@ Max Kuhn
   overflow-x: hidden;
 }
 
-#bdbigyuirh .gt_column_spanner_outer {
+#abxcrujicm .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -449,15 +453,15 @@ Max Kuhn
   padding-right: 4px;
 }
 
-#bdbigyuirh .gt_column_spanner_outer:first-child {
+#abxcrujicm .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#bdbigyuirh .gt_column_spanner_outer:last-child {
+#abxcrujicm .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#bdbigyuirh .gt_column_spanner {
+#abxcrujicm .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -469,11 +473,11 @@ Max Kuhn
   width: 100%;
 }
 
-#bdbigyuirh .gt_spanner_row {
+#abxcrujicm .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#bdbigyuirh .gt_group_heading {
+#abxcrujicm .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -499,7 +503,7 @@ Max Kuhn
   text-align: left;
 }
 
-#bdbigyuirh .gt_empty_group_heading {
+#abxcrujicm .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -514,15 +518,15 @@ Max Kuhn
   vertical-align: middle;
 }
 
-#bdbigyuirh .gt_from_md > :first-child {
+#abxcrujicm .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#bdbigyuirh .gt_from_md > :last-child {
+#abxcrujicm .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#bdbigyuirh .gt_row {
+#abxcrujicm .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -541,7 +545,7 @@ Max Kuhn
   overflow-x: hidden;
 }
 
-#bdbigyuirh .gt_stub {
+#abxcrujicm .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -554,7 +558,7 @@ Max Kuhn
   padding-right: 5px;
 }
 
-#bdbigyuirh .gt_stub_row_group {
+#abxcrujicm .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -568,15 +572,15 @@ Max Kuhn
   vertical-align: top;
 }
 
-#bdbigyuirh .gt_row_group_first td {
+#abxcrujicm .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#bdbigyuirh .gt_row_group_first th {
+#abxcrujicm .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#bdbigyuirh .gt_summary_row {
+#abxcrujicm .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -586,16 +590,16 @@ Max Kuhn
   padding-right: 5px;
 }
 
-#bdbigyuirh .gt_first_summary_row {
+#abxcrujicm .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#bdbigyuirh .gt_first_summary_row.thick {
+#abxcrujicm .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#bdbigyuirh .gt_last_summary_row {
+#abxcrujicm .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -605,7 +609,7 @@ Max Kuhn
   border-bottom-color: #D3D3D3;
 }
 
-#bdbigyuirh .gt_grand_summary_row {
+#abxcrujicm .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -615,7 +619,7 @@ Max Kuhn
   padding-right: 5px;
 }
 
-#bdbigyuirh .gt_first_grand_summary_row {
+#abxcrujicm .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -625,7 +629,7 @@ Max Kuhn
   border-top-color: #D3D3D3;
 }
 
-#bdbigyuirh .gt_last_grand_summary_row_top {
+#abxcrujicm .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -635,11 +639,11 @@ Max Kuhn
   border-bottom-color: #D3D3D3;
 }
 
-#bdbigyuirh .gt_striped {
+#abxcrujicm .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#bdbigyuirh .gt_table_body {
+#abxcrujicm .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -648,7 +652,7 @@ Max Kuhn
   border-bottom-color: #D3D3D3;
 }
 
-#bdbigyuirh .gt_footnotes {
+#abxcrujicm .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -662,7 +666,7 @@ Max Kuhn
   border-right-color: #D3D3D3;
 }
 
-#bdbigyuirh .gt_footnote {
+#abxcrujicm .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -671,7 +675,7 @@ Max Kuhn
   padding-right: 5px;
 }
 
-#bdbigyuirh .gt_sourcenotes {
+#abxcrujicm .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -685,7 +689,7 @@ Max Kuhn
   border-right-color: #D3D3D3;
 }
 
-#bdbigyuirh .gt_sourcenote {
+#abxcrujicm .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -693,72 +697,72 @@ Max Kuhn
   padding-right: 5px;
 }
 
-#bdbigyuirh .gt_left {
+#abxcrujicm .gt_left {
   text-align: left;
 }
 
-#bdbigyuirh .gt_center {
+#abxcrujicm .gt_center {
   text-align: center;
 }
 
-#bdbigyuirh .gt_right {
+#abxcrujicm .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#bdbigyuirh .gt_font_normal {
+#abxcrujicm .gt_font_normal {
   font-weight: normal;
 }
 
-#bdbigyuirh .gt_font_bold {
+#abxcrujicm .gt_font_bold {
   font-weight: bold;
 }
 
-#bdbigyuirh .gt_font_italic {
+#abxcrujicm .gt_font_italic {
   font-style: italic;
 }
 
-#bdbigyuirh .gt_super {
+#abxcrujicm .gt_super {
   font-size: 65%;
 }
 
-#bdbigyuirh .gt_footnote_marks {
+#abxcrujicm .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#bdbigyuirh .gt_asterisk {
+#abxcrujicm .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#bdbigyuirh .gt_indent_1 {
+#abxcrujicm .gt_indent_1 {
   text-indent: 5px;
 }
 
-#bdbigyuirh .gt_indent_2 {
+#abxcrujicm .gt_indent_2 {
   text-indent: 10px;
 }
 
-#bdbigyuirh .gt_indent_3 {
+#abxcrujicm .gt_indent_3 {
   text-indent: 15px;
 }
 
-#bdbigyuirh .gt_indent_4 {
+#abxcrujicm .gt_indent_4 {
   text-indent: 20px;
 }
 
-#bdbigyuirh .gt_indent_5 {
+#abxcrujicm .gt_indent_5 {
   text-indent: 25px;
 }
 
-#bdbigyuirh .katex-display {
+#abxcrujicm .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#bdbigyuirh div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#abxcrujicm div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -830,8 +834,8 @@ Odds Ratios
 </blockquote>
 </div>
 </section>
-<section id="difficulty-estimates" class="slide level2">
-<h2>Difficulty Estimates</h2>
+<section id="difficulty-estimates-a.k.a.-blups" class="slide level2">
+<h2>Difficulty Estimates a.k.a. BLUPs</h2>
 
 <img data-src="figures/mle-tasks-1.svg" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
 <section id="bayesian-hierarchical-model" class="slide level2">
@@ -1374,11 +1378,18 @@ Odds Ratios
 <h2>Bayesian difficulty Estimates</h2>
 
 <img data-src="figures/bayes-tasks-1.svg" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
-<section id="thanks" class="slide level2">
-<h2>Thanks</h2>
-<p>Thanks for the invitation to speak today!</p>
-
+<section id="summary" class="slide level2">
+<h2>Summary</h2>
+<p>It might be a good idea to consult a statistician for advice on conducting an inferential analysis of your experimental design.</p>
+<p><br></p>
+<p>Existing statistical tools perform very well for any type of evaluation outcome and can accommodate nearly every experimental design.</p>
+<p><br></p>
+<p>R has very good existing tools for executing the analyses.</p>
 </section></section>
+<section id="thanks-for-listening" class="title-slide slide level1 center" data-background-color="#D04E59FF">
+<h1>Thanks for listening!</h1>
+
+</section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
