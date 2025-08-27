@@ -82,6 +82,38 @@ If I get results for this using different LLMs or prompts, how can I know
 
 See ["I was wrong about tidymodels and LLMs"](https://www.simonpcouch.com/blog/2025-08-26-predictive/) by Simon (yesterday) for an interesting read. 
 
+## An example endpoint
+
+```{r}
+#| label: example-plot
+#| echo: false
+#| fig-width: 6
+#| fig-height: 3
+#| fig-align: "center"
+#| out-width: "50%"
+
+set.seed(382)
+tibble(model = paste("LLM", 1:6)) |> 
+ dplyr::mutate(
+  mn = map(row_number(), ~ rnorm(100, mean = .x + rnorm(10, sd = 1)))
+ ) |> 
+  tidyr::unnest(mn) |> 
+ summarize(
+  estimate = median(mn) / 100,
+  lower = quantile(mn, prob = 0.025) / 100,
+  upper = quantile(mn, prob = 0.975) / 100,
+  .by = c(model)
+ ) |> 
+ mutate(model = reorder(model, estimate)) |> 
+ ggplot(aes(y = model)) + 
+ geom_point(aes(x = estimate)) + 
+ geom_errorbar(aes(xmin = lower, xmax = upper), width = 1/ 2) +
+ scale_x_continuous(labels = label_percent()) +
+ labs(y = NULL, x = "Difference in Accuracy from Previous Best LLM") +
+ theme_bw()
+```
+
+
 ## inspect and vitals 
 
 [`inspect`](https://inspect.aisi.org.uk/) is "a framework for large language model evaluations created by the UK AI Security Institute."
@@ -104,7 +136,7 @@ For our data, there are three _ordinal_ levels: incorrect, partially correct, an
 
 Some notation: 
 
-- $C$ outcome values ($C = 3$)
+- $C$ outcome values ($C = 3$ here)
 - $p$ LLMs ($p=3$ for our data)
 - $m$ epochs (a.k.a. replicates, $m = 3$)
 
@@ -186,28 +218,26 @@ $$
    -  $\beta_{3}$: GPT - Claude
 :::
 
-
-
-
 ## Hierarchical (mixed) model
 
 Estimate parameters using maximum likelihood. Straightforward-ish. 
 
 <br> 
 
-Enables inference via p-values (booo) and confidence intervals (YAY).
+Enables inference via p-values (booo) and confidence intervals (better).
 
 <br>
 
 ```{r}
 #| label: mle
 #| eval: false
-#| code-line-numbers: "2|3|5-6|"
+#| code-line-numbers: "2|4-5|7|"
 # `id` is the question number
 llm_mod  <- ordinal::clmm(score ~ LLM + (1|id), data = res, Hess = TRUE)
-null_mod <- ordinal::clmm(score ~ 1   + (1|id), data = res, Hess = TRUE)
 
+null_mod <- ordinal::clmm(score ~ 1   + (1|id), data = res, Hess = TRUE)
 anova(llm_mod, null_mod)
+
 tidy(llm_mod, conf.int = TRUE)
 ```
 

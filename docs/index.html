@@ -227,6 +227,10 @@ Max Kuhn and Simon Couch
 </ul>
 <p>See <a href="https://www.simonpcouch.com/blog/2025-08-26-predictive/">“I was wrong about tidymodels and LLMs”</a> by Simon (yesterday) for an interesting read.</p>
 </section>
+<section id="an-example-endpoint" class="slide level2">
+<h2>An example endpoint</h2>
+
+<img data-src="figures/example-plot-1.svg" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
 <section id="inspect-and-vitals" class="slide level2">
 <h2>inspect and vitals</h2>
 <p><a href="https://inspect.aisi.org.uk/"><code>inspect</code></a> is “a framework for large language model evaluations created by the UK AI Security Institute.”</p>
@@ -245,7 +249,7 @@ Max Kuhn and Simon Couch
 <p>For our data, there are three <em>ordinal</em> levels: incorrect, partially correct, and correct.</p>
 <p>Some notation:</p>
 <ul>
-<li><span class="math inline">\(C\)</span> outcome values (<span class="math inline">\(C = 3\)</span>)</li>
+<li><span class="math inline">\(C\)</span> outcome values (<span class="math inline">\(C = 3\)</span> here)</li>
 <li><span class="math inline">\(p\)</span> LLMs (<span class="math inline">\(p=3\)</span> for our data)</li>
 <li><span class="math inline">\(m\)</span> epochs (a.k.a. replicates, <span class="math inline">\(m = 3\)</span>)</li>
 </ul>
@@ -305,15 +309,16 @@ Max Kuhn and Simon Couch
 <h2>Hierarchical (mixed) model</h2>
 <p>Estimate parameters using maximum likelihood. Straightforward-ish.</p>
 <p><br></p>
-<p>Enables inference via p-values (booo) and confidence intervals (YAY).</p>
+<p>Enables inference via p-values (booo) and confidence intervals (better).</p>
 <p><br></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1" data-code-line-numbers="2|3|5-6|"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="co"># `id` is the question number</span></span>
+<div class="sourceCode cell-code" id="cb1" data-code-line-numbers="2|4-5|7|"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="co"># `id` is the question number</span></span>
 <span id="cb1-2"><a href=""></a>llm_mod  <span class="ot">&lt;-</span> ordinal<span class="sc">::</span><span class="fu">clmm</span>(score <span class="sc">~</span> LLM <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">data =</span> res, <span class="at">Hess =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-3"><a href=""></a>null_mod <span class="ot">&lt;-</span> ordinal<span class="sc">::</span><span class="fu">clmm</span>(score <span class="sc">~</span> <span class="dv">1</span>   <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">data =</span> res, <span class="at">Hess =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-4"><a href=""></a></span>
+<span id="cb1-3"><a href=""></a></span>
+<span id="cb1-4"><a href=""></a>null_mod <span class="ot">&lt;-</span> ordinal<span class="sc">::</span><span class="fu">clmm</span>(score <span class="sc">~</span> <span class="dv">1</span>   <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">data =</span> res, <span class="at">Hess =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb1-5"><a href=""></a><span class="fu">anova</span>(llm_mod, null_mod)</span>
-<span id="cb1-6"><a href=""></a><span class="fu">tidy</span>(llm_mod, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a href=""></a></span>
+<span id="cb1-7"><a href=""></a><span class="fu">tidy</span>(llm_mod, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="results" class="slide level2">
@@ -321,23 +326,23 @@ Max Kuhn and Simon Couch
 <p>Parameter estimates are the difference from the GPT 4.1 results:</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="kprzyvuezx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#kprzyvuezx table {
+<div id="bnwsnqnwqm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#bnwsnqnwqm table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#kprzyvuezx thead, #kprzyvuezx tbody, #kprzyvuezx tfoot, #kprzyvuezx tr, #kprzyvuezx td, #kprzyvuezx th {
+#bnwsnqnwqm thead, #bnwsnqnwqm tbody, #bnwsnqnwqm tfoot, #bnwsnqnwqm tr, #bnwsnqnwqm td, #bnwsnqnwqm th {
   border-style: none;
 }
 
-#kprzyvuezx p {
+#bnwsnqnwqm p {
   margin: 0;
   padding: 0;
 }
 
-#kprzyvuezx .gt_table {
+#bnwsnqnwqm .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -363,12 +368,12 @@ Max Kuhn and Simon Couch
   border-left-color: #D3D3D3;
 }
 
-#kprzyvuezx .gt_caption {
+#bnwsnqnwqm .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#kprzyvuezx .gt_title {
+#bnwsnqnwqm .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -380,7 +385,7 @@ Max Kuhn and Simon Couch
   border-bottom-width: 0;
 }
 
-#kprzyvuezx .gt_subtitle {
+#bnwsnqnwqm .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -392,7 +397,7 @@ Max Kuhn and Simon Couch
   border-top-width: 0;
 }
 
-#kprzyvuezx .gt_heading {
+#bnwsnqnwqm .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -404,13 +409,13 @@ Max Kuhn and Simon Couch
   border-right-color: #D3D3D3;
 }
 
-#kprzyvuezx .gt_bottom_border {
+#bnwsnqnwqm .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#kprzyvuezx .gt_col_headings {
+#bnwsnqnwqm .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -425,7 +430,7 @@ Max Kuhn and Simon Couch
   border-right-color: #D3D3D3;
 }
 
-#kprzyvuezx .gt_col_heading {
+#bnwsnqnwqm .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -445,7 +450,7 @@ Max Kuhn and Simon Couch
   overflow-x: hidden;
 }
 
-#kprzyvuezx .gt_column_spanner_outer {
+#bnwsnqnwqm .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -457,15 +462,15 @@ Max Kuhn and Simon Couch
   padding-right: 4px;
 }
 
-#kprzyvuezx .gt_column_spanner_outer:first-child {
+#bnwsnqnwqm .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#kprzyvuezx .gt_column_spanner_outer:last-child {
+#bnwsnqnwqm .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#kprzyvuezx .gt_column_spanner {
+#bnwsnqnwqm .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -477,11 +482,11 @@ Max Kuhn and Simon Couch
   width: 100%;
 }
 
-#kprzyvuezx .gt_spanner_row {
+#bnwsnqnwqm .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#kprzyvuezx .gt_group_heading {
+#bnwsnqnwqm .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -507,7 +512,7 @@ Max Kuhn and Simon Couch
   text-align: left;
 }
 
-#kprzyvuezx .gt_empty_group_heading {
+#bnwsnqnwqm .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -522,15 +527,15 @@ Max Kuhn and Simon Couch
   vertical-align: middle;
 }
 
-#kprzyvuezx .gt_from_md > :first-child {
+#bnwsnqnwqm .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#kprzyvuezx .gt_from_md > :last-child {
+#bnwsnqnwqm .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#kprzyvuezx .gt_row {
+#bnwsnqnwqm .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -549,7 +554,7 @@ Max Kuhn and Simon Couch
   overflow-x: hidden;
 }
 
-#kprzyvuezx .gt_stub {
+#bnwsnqnwqm .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -562,7 +567,7 @@ Max Kuhn and Simon Couch
   padding-right: 5px;
 }
 
-#kprzyvuezx .gt_stub_row_group {
+#bnwsnqnwqm .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -576,15 +581,15 @@ Max Kuhn and Simon Couch
   vertical-align: top;
 }
 
-#kprzyvuezx .gt_row_group_first td {
+#bnwsnqnwqm .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#kprzyvuezx .gt_row_group_first th {
+#bnwsnqnwqm .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#kprzyvuezx .gt_summary_row {
+#bnwsnqnwqm .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -594,16 +599,16 @@ Max Kuhn and Simon Couch
   padding-right: 5px;
 }
 
-#kprzyvuezx .gt_first_summary_row {
+#bnwsnqnwqm .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#kprzyvuezx .gt_first_summary_row.thick {
+#bnwsnqnwqm .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#kprzyvuezx .gt_last_summary_row {
+#bnwsnqnwqm .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -613,7 +618,7 @@ Max Kuhn and Simon Couch
   border-bottom-color: #D3D3D3;
 }
 
-#kprzyvuezx .gt_grand_summary_row {
+#bnwsnqnwqm .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -623,7 +628,7 @@ Max Kuhn and Simon Couch
   padding-right: 5px;
 }
 
-#kprzyvuezx .gt_first_grand_summary_row {
+#bnwsnqnwqm .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -633,7 +638,7 @@ Max Kuhn and Simon Couch
   border-top-color: #D3D3D3;
 }
 
-#kprzyvuezx .gt_last_grand_summary_row_top {
+#bnwsnqnwqm .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -643,11 +648,11 @@ Max Kuhn and Simon Couch
   border-bottom-color: #D3D3D3;
 }
 
-#kprzyvuezx .gt_striped {
+#bnwsnqnwqm .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#kprzyvuezx .gt_table_body {
+#bnwsnqnwqm .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -656,7 +661,7 @@ Max Kuhn and Simon Couch
   border-bottom-color: #D3D3D3;
 }
 
-#kprzyvuezx .gt_footnotes {
+#bnwsnqnwqm .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -670,7 +675,7 @@ Max Kuhn and Simon Couch
   border-right-color: #D3D3D3;
 }
 
-#kprzyvuezx .gt_footnote {
+#bnwsnqnwqm .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -679,7 +684,7 @@ Max Kuhn and Simon Couch
   padding-right: 5px;
 }
 
-#kprzyvuezx .gt_sourcenotes {
+#bnwsnqnwqm .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -693,7 +698,7 @@ Max Kuhn and Simon Couch
   border-right-color: #D3D3D3;
 }
 
-#kprzyvuezx .gt_sourcenote {
+#bnwsnqnwqm .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -701,72 +706,72 @@ Max Kuhn and Simon Couch
   padding-right: 5px;
 }
 
-#kprzyvuezx .gt_left {
+#bnwsnqnwqm .gt_left {
   text-align: left;
 }
 
-#kprzyvuezx .gt_center {
+#bnwsnqnwqm .gt_center {
   text-align: center;
 }
 
-#kprzyvuezx .gt_right {
+#bnwsnqnwqm .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#kprzyvuezx .gt_font_normal {
+#bnwsnqnwqm .gt_font_normal {
   font-weight: normal;
 }
 
-#kprzyvuezx .gt_font_bold {
+#bnwsnqnwqm .gt_font_bold {
   font-weight: bold;
 }
 
-#kprzyvuezx .gt_font_italic {
+#bnwsnqnwqm .gt_font_italic {
   font-style: italic;
 }
 
-#kprzyvuezx .gt_super {
+#bnwsnqnwqm .gt_super {
   font-size: 65%;
 }
 
-#kprzyvuezx .gt_footnote_marks {
+#bnwsnqnwqm .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#kprzyvuezx .gt_asterisk {
+#bnwsnqnwqm .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#kprzyvuezx .gt_indent_1 {
+#bnwsnqnwqm .gt_indent_1 {
   text-indent: 5px;
 }
 
-#kprzyvuezx .gt_indent_2 {
+#bnwsnqnwqm .gt_indent_2 {
   text-indent: 10px;
 }
 
-#kprzyvuezx .gt_indent_3 {
+#bnwsnqnwqm .gt_indent_3 {
   text-indent: 15px;
 }
 
-#kprzyvuezx .gt_indent_4 {
+#bnwsnqnwqm .gt_indent_4 {
   text-indent: 20px;
 }
 
-#kprzyvuezx .gt_indent_5 {
+#bnwsnqnwqm .gt_indent_5 {
   text-indent: 25px;
 }
 
-#kprzyvuezx .katex-display {
+#bnwsnqnwqm .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#kprzyvuezx div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#bnwsnqnwqm div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
